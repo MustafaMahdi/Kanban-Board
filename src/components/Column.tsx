@@ -5,26 +5,21 @@ import { ITASK } from "../models/ITask";
 import AddNewTask from "./AddNewTask";
 import Task from "./Task";
 
-// const ref = useRef(null);
-//   const [, drop] = useDrop({
-//     accept: "card",
-//     drop(item) {
-//       changeTaskStatus(item.id, status);
-//     }
-//   });
-//   drop(ref);
-//   return <div ref={ref}> {children}</div>;
-const Column: React.FC<{ tasks: ITASK[] }> = (props) => {
+const Column: React.FC<{
+  tasks: ITASK[];
+  columnName: string;
+  onChangeTaskStatusHandler: (task: ITASK, status: StatusTypes) => void;
+}> = (props) => {
   const columnRef = useRef(null);
-  const [ , drop] = useDrop({
+  const [, drop] = useDrop({
     accept: "card",
-    drop(item) {
-      // handler
-    }
+    drop(updatedTask: ITASK) {
+      props.onChangeTaskStatusHandler(updatedTask, props.tasks[0].status);
+    },
   });
-  drop(columnRef)
+  drop(columnRef);
   const displayTasks = props.tasks.map((task) => {
-    return <Task task={task} />;
+    return <Task task={task} key={task.id} />;
   });
   return (
     <div className="col-12 col-lg-6 col-xl-3" ref={columnRef}>
@@ -64,16 +59,13 @@ const Column: React.FC<{ tasks: ITASK[] }> = (props) => {
               </div>
             </div> */}
           </div>
-          {props.tasks[0].status === StatusTypes.Todo && <h5 className="card-title">To Do</h5>}
-          {props.tasks[0].status === StatusTypes.InProgress && <h5 className="card-title">In Progress</h5>}
-          {props.tasks[0].status === StatusTypes.InReview && <h5 className="card-title">In Review</h5>}
-          {props.tasks[0].status === StatusTypes.Done && <h5 className="card-title">Done</h5>}
+            <h5 className="card-title">{props.columnName}</h5>
           {/* <h6 className="card-subtitle text-muted">
             Nam pretium turpis et arcu. Duis arcu tortor.
           </h6> */}
         </div>
         <div className="card-body p-3">
-          {displayTasks}
+          {displayTasks.length !== 0 && displayTasks}
           <AddNewTask />
         </div>
       </div>

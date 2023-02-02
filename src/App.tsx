@@ -4,8 +4,9 @@ import { PriorityTypes, StatusTypes } from "./defines/defines";
 import { ITASK } from "./models/ITask";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useCallback, useState } from "react";
 
-const tasks: ITASK[] = [
+const tasksList: ITASK[] = [
   {
     title: "task1",
     description:
@@ -128,11 +129,24 @@ const tasks: ITASK[] = [
   },
 ];
 function App() {
+  const [tasks, setTasks] = useState<ITASK[]>(tasksList);
   const todoTasks: ITASK[] = [];
   const inProgressTasks: ITASK[] = [];
   const inReviewTasks: ITASK[] = [];
   const doneTasks: ITASK[] = [];
 
+  const onChangeTaskStatusHandler = useCallback(
+    (updatedTask: ITASK , status: StatusTypes) => {
+      const updatedTasks: ITASK[] = tasks.map((task: ITASK) => {
+        if (task.id === updatedTask.id) {
+          task.status = status;
+        }
+        return task;
+      });
+      setTasks(updatedTasks);
+    },
+    [tasks]
+  );
   // filtering books on its shelf
   tasks.forEach((task) => {
     switch (task.status) {
@@ -155,13 +169,32 @@ function App() {
       <div className="container p-0">
         <h1 className="h3 mb-3">Kanban Board</h1>
         <DndProvider backend={HTML5Backend}>
-
-        <div className="row px-1">
-          <Column tasks={todoTasks} />
-          <Column tasks={inProgressTasks}/>
-          <Column tasks={inReviewTasks}/>
-          <Column tasks={doneTasks}/>
-        </div>
+          <div className="row px-1">
+            <Column
+              tasks={todoTasks}
+              columnName="To Do"
+              onChangeTaskStatusHandler={onChangeTaskStatusHandler}
+              key={StatusTypes.Todo}
+            />
+            <Column
+              tasks={inProgressTasks}
+              columnName="In Progress"
+              onChangeTaskStatusHandler={onChangeTaskStatusHandler}
+              key={StatusTypes.InProgress}
+            />
+            <Column
+              tasks={inReviewTasks}
+              columnName="In Review"
+              onChangeTaskStatusHandler={onChangeTaskStatusHandler}
+              key={StatusTypes.InReview}
+            />
+            <Column
+              tasks={doneTasks}
+              columnName="Done"
+              onChangeTaskStatusHandler={onChangeTaskStatusHandler}
+              key={StatusTypes.Done}
+            />
+          </div>
         </DndProvider>
       </div>
     </main>
