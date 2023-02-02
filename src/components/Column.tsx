@@ -8,13 +8,17 @@ import Task from "./Task";
 const Column: React.FC<{
   tasks: ITASK[];
   columnName: string;
-  onChangeTaskStatusHandler: (task: ITASK, status: StatusTypes) => void;
+  columnStatus: StatusTypes;
+  onChangeTaskStatusHandler: (
+    updatedTask: ITASK,
+    newStatus: StatusTypes
+  ) => void;
 }> = (props) => {
   const columnRef = useRef(null);
   const [, drop] = useDrop({
     accept: "card",
     drop(updatedTask: ITASK) {
-      props.onChangeTaskStatusHandler(updatedTask, props.tasks[0].status);
+      props.onChangeTaskStatusHandler(updatedTask, props.columnStatus);
     },
   });
   drop(columnRef);
@@ -59,7 +63,7 @@ const Column: React.FC<{
               </div>
             </div> */}
           </div>
-            <h5 className="card-title">{props.columnName}</h5>
+          <h5 className="card-title">{props.columnName}</h5>
           {/* <h6 className="card-subtitle text-muted">
             Nam pretium turpis et arcu. Duis arcu tortor.
           </h6> */}

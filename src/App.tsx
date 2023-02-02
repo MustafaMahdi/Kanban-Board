@@ -136,10 +136,13 @@ function App() {
   const doneTasks: ITASK[] = [];
 
   const onChangeTaskStatusHandler = useCallback(
-    (updatedTask: ITASK , status: StatusTypes) => {
+    (updatedTask: ITASK, newStatus: StatusTypes) => {
+      if (isPreventChangeTaskStatus(updatedTask, newStatus)) {
+        return;
+      }
       const updatedTasks: ITASK[] = tasks.map((task: ITASK) => {
         if (task.id === updatedTask.id) {
-          task.status = status;
+          task.status = newStatus;
         }
         return task;
       });
@@ -147,6 +150,18 @@ function App() {
     },
     [tasks]
   );
+  const isPreventChangeTaskStatus = (
+    updatedTask: ITASK,
+    newStatus: StatusTypes
+  ): boolean => {
+    if (
+      newStatus === StatusTypes.Done &&
+      updatedTask.status !== StatusTypes.InReview
+    ) {
+      return true;
+    }
+    return false;
+  };
   // filtering books on its shelf
   tasks.forEach((task) => {
     switch (task.status) {
@@ -175,24 +190,28 @@ function App() {
               columnName="To Do"
               onChangeTaskStatusHandler={onChangeTaskStatusHandler}
               key={StatusTypes.Todo}
+              columnStatus={StatusTypes.Todo}
             />
             <Column
               tasks={inProgressTasks}
               columnName="In Progress"
               onChangeTaskStatusHandler={onChangeTaskStatusHandler}
               key={StatusTypes.InProgress}
+              columnStatus={StatusTypes.InProgress}
             />
             <Column
               tasks={inReviewTasks}
               columnName="In Review"
               onChangeTaskStatusHandler={onChangeTaskStatusHandler}
               key={StatusTypes.InReview}
+              columnStatus={StatusTypes.InReview}
             />
             <Column
               tasks={doneTasks}
               columnName="Done"
               onChangeTaskStatusHandler={onChangeTaskStatusHandler}
               key={StatusTypes.Done}
+              columnStatus={StatusTypes.Done}
             />
           </div>
         </DndProvider>
