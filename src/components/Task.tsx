@@ -1,15 +1,22 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDrag } from "react-dnd";
+import { PriorityTypes } from "../defines/defines";
 import { ITASK } from "../models/ITask";
 import Details from "../pages/Details";
 
-
 const Task: React.FC<{ task: ITASK }> = ({ task }) => {
   const taskRef = useRef(null);
-  const [{ isDragging }, drag] = useDrag(
+
+  useEffect(() => {
+
+    setDrag(taskRef);
+    
+  }, [taskRef]);
+
+  const [{ isDragging }, setDrag] = useDrag(
     () => ({
       type: "card",
-      item: task ,
+      item: task,
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
@@ -17,8 +24,13 @@ const Task: React.FC<{ task: ITASK }> = ({ task }) => {
     []
   );
   const opacity = isDragging ? 0.5 : 1;
+  const displayTaskPriority =
+    (task.priority === PriorityTypes.Highest && <strong>Highest</strong>) ||
+    (task.priority === PriorityTypes.High && <strong>High</strong>) ||
+    (task.priority === PriorityTypes.Medium && <strong>Medium</strong>) ||
+    (task.priority === PriorityTypes.Low && <strong>Low</strong>) ||
+    (task.priority === PriorityTypes.None && <strong>None</strong>);
 
-  drag(taskRef);
   return (
     <div className="card mb-3 bg-light" ref={taskRef} style={{ opacity }}>
       <div className="card-body p-3">
@@ -27,9 +39,7 @@ const Task: React.FC<{ task: ITASK }> = ({ task }) => {
         </div>
         <p>{task.description}</p>
         <div className="float-right mr-n2 text-muted">
-          <p>
-            Priority : <strong>{task.priority}</strong>
-          </p>
+          <p>Priority : {displayTaskPriority}</p>
         </div>
         {/* should be route */}
         <Details />

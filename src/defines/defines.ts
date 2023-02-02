@@ -5,9 +5,9 @@ export enum StatusTypes {
   Done = 4,
 }
 export enum PriorityTypes {
-  Highest = 'Highest',
-  High = 'High',
-  Medium = 'Medium',
-  Low = 'Low',
-  None = 'None',
+  Highest = 1,
+  High = 2,
+  Medium = 3,
+  Low = 4,
+  None = 5,
 }

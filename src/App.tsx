@@ -186,28 +186,28 @@ function App() {
         <DndProvider backend={HTML5Backend}>
           <div className="row px-1">
             <Column
-              tasks={todoTasks}
+              columnTasks={todoTasks}
               columnName="To Do"
               onChangeTaskStatusHandler={onChangeTaskStatusHandler}
               key={StatusTypes.Todo}
               columnStatus={StatusTypes.Todo}
             />
             <Column
-              tasks={inProgressTasks}
+              columnTasks={inProgressTasks}
               columnName="In Progress"
               onChangeTaskStatusHandler={onChangeTaskStatusHandler}
               key={StatusTypes.InProgress}
               columnStatus={StatusTypes.InProgress}
             />
             <Column
-              tasks={inReviewTasks}
+              columnTasks={inReviewTasks}
               columnName="In Review"
               onChangeTaskStatusHandler={onChangeTaskStatusHandler}
               key={StatusTypes.InReview}
               columnStatus={StatusTypes.InReview}
             />
             <Column
-              tasks={doneTasks}
+              columnTasks={doneTasks}
               columnName="Done"
               onChangeTaskStatusHandler={onChangeTaskStatusHandler}
               key={StatusTypes.Done}

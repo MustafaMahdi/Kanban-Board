@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDrop } from "react-dnd";
 import { StatusTypes } from "../defines/defines";
 import { ITASK } from "../models/ITask";
@@ -6,25 +6,38 @@ import AddNewTask from "./AddNewTask";
 import Task from "./Task";
 
 const Column: React.FC<{
-  tasks: ITASK[];
+  columnTasks: ITASK[];
   columnName: string;
   columnStatus: StatusTypes;
   onChangeTaskStatusHandler: (
     updatedTask: ITASK,
     newStatus: StatusTypes
   ) => void;
-}> = (props) => {
+}> = ({ columnTasks, columnName, columnStatus, onChangeTaskStatusHandler }) => {
   const columnRef = useRef(null);
-  const [, drop] = useDrop({
+  const useDropConfig = {
     accept: "card",
     drop(updatedTask: ITASK) {
-      props.onChangeTaskStatusHandler(updatedTask, props.columnStatus);
+      onChangeTaskStatusHandler(updatedTask, columnStatus);
     },
-  });
-  drop(columnRef);
-  const displayTasks = props.tasks.map((task) => {
+  };
+  const [, setDrop] = useDrop(useDropConfig);
+
+  const orderedTasksByPriority = () => {
+    columnTasks.sort(function (a, b) {
+      return a.priority - b.priority;
+    });
+  };
+
+  useEffect(() => {
+    orderedTasksByPriority();
+    setDrop(columnRef);
+  }, [columnTasks, columnRef]);
+
+  const displayTasks = columnTasks.map((task) => {
     return <Task task={task} key={task.id} />;
   });
+
   return (
     <div className="col-12 col-lg-6 col-xl-3" ref={columnRef}>
       <div className="card card-border-primary">
@@ -63,13 +76,13 @@ const Column: React.FC<{
               </div>
             </div> */}
           </div>
-          <h5 className="card-title">{props.columnName}</h5>
+          <h5 className="card-title">{columnName}</h5>
           {/* <h6 className="card-subtitle text-muted">
             Nam pretium turpis et arcu. Duis arcu tortor.
           </h6> */}
         </div>
         <div className="card-body p-3">
-          {displayTasks.length !== 0 && displayTasks}
+          {displayTasks}
           <AddNewTask />
         </div>
       </div>
