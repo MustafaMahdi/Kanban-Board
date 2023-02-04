@@ -1,16 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import { useDrag } from "react-dnd";
+import { Link } from "react-router-dom";
 import { PriorityTypes } from "../defines/defines";
 import { ITASK } from "../models/ITask";
-import Details from "../pages/Details";
 
 const Task: React.FC<{ task: ITASK }> = ({ task }) => {
   const taskRef = useRef(null);
 
   useEffect(() => {
-
     setDrag(taskRef);
-    
   }, [taskRef]);
 
   const [{ isDragging }, setDrag] = useDrag(
@@ -41,8 +39,11 @@ const Task: React.FC<{ task: ITASK }> = ({ task }) => {
         <div className="float-right mr-n2 text-muted">
           <p>Priority : {displayTaskPriority}</p>
         </div>
-        {/* should be route */}
-        <Details />
+        <div className="d-flex align-items-center justify-content-center">
+          <Link className="btn btn-outline-primary btn-sm" to={`/details/${task.id}`}>
+            Details
+          </Link>
+        </div>
       </div>
     </div>
   );
